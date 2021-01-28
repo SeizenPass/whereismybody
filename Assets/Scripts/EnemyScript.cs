@@ -8,35 +8,33 @@ public class EnemyScript : MonoBehaviour
     GroundDetector groundDetector;
 
     private GameObject player;
+
+    private PossessScript ps;
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.Find("Player");
         groundDetector = GetComponentInChildren<GroundDetector>();
+        ps = GetComponentInChildren<PossessScript>();
     }
 
     // Update is called once per frame
-    void Update()
+    
+    
+    
+    private void OnPossess()
     {
-        
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (player == collision.gameObject)
+        if (ps.playerAround)
         {
-            if (player.GetComponent<PlayerInput>().enabled == true)
+            if (player.GetComponent<PlayerScript>().enabled)
             {
-                print("Collision");
-                GetComponent<PlayerInput>().enabled = true;
                 GetComponent<PlayerScript>().enabled = true;
-                player.GetComponent<PlayerInput>().enabled = false;
+                player.GetComponent<PlayerScript>().enabled = false;
             }
             else
             {
-                GetComponent<PlayerInput>().enabled = false;
                 GetComponent<PlayerScript>().enabled = false;
-                player.GetComponent<PlayerInput>().enabled = true;
+                player.GetComponent<PlayerScript>().enabled = true;
             }
         }
     }

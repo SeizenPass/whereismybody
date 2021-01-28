@@ -37,6 +37,5 @@ public class PlayerScript : MonoBehaviour
     void OnMove(InputValue value)
     {
         direction = value.Get<Vector2>();
-        Debug.Log("wahaha " + gameObject.name);
     }
 }
