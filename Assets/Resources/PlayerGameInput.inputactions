@@ -1,5 +1,5 @@
 {
-    "name": "PlayerInput",
+    "name": "PlayerGameInput",
     "maps": [
         {
             "name": "Player",
@@ -25,6 +25,14 @@
                     "name": "Fire",
                     "type": "Button",
                     "id": "d5c048df-43ca-4137-8a87-4098b402a2e8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Possess",
+                    "type": "Button",
+                    "id": "4d331d59-bdf0-457b-9255-ef9aedcfae30",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -248,6 +256,17 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "779551f7-d846-4897-9618-8b2a4f325d24",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Possess",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
