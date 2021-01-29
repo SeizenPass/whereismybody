@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PossessScript : MonoBehaviour
+public class PossessAreaScript : MonoBehaviour
 {
     private GameObject player;
     public bool playerAround = false;
