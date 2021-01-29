@@ -9,10 +9,12 @@ public class GroundDetector : MonoBehaviour
     // Start is called before the first frame update
     void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.gameObject.GetComponent<Collider2D>().isTrigger) return;
         collisions++;    
     }
     void OnTriggerExit2D(Collider2D collision)
     {
+        if (collision.gameObject.GetComponent<Collider2D>().isTrigger) return;
         collisions--;    
     }
 }
