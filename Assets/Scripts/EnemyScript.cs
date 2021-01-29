@@ -9,12 +9,16 @@ public class EnemyScript : MonoBehaviour
 
     private GameObject player;
     private PossessScript ps;
+    private RigidbodyConstraints2D _constraints2D;
+
+    private bool isPossessed = false;
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.Find("Player");
         groundDetector = GetComponentInChildren<GroundDetector>();
         ps = GetComponentInChildren<PossessScript>();
+        _constraints2D = GetComponent<Rigidbody2D>().constraints;
     }
 
     // Update is called once per frame
@@ -23,21 +27,32 @@ public class EnemyScript : MonoBehaviour
     
     private void OnPossess()
     {
-        if (ps.playerAround)
+        if (groundDetector.IsAtGround)
         {
-            if (player.GetComponent<PlayerScript>().enabled)
+            if (!isPossessed && ps.playerAround)
             {
+                isPossessed = true;
                 GetComponent<PlayerScript>().enabled = true;
+                GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
+                player.GetComponentInChildren<SpriteRenderer>().enabled = false;
+                player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                player.GetComponent<CapsuleCollider2D>().enabled = false;
                 player.GetComponent<PlayerScript>().enabled = false;
             }
-            else
+            else if (isPossessed)
             {
+                isPossessed = false;
                 GetComponent<PlayerScript>().enabled = false;
+                GetComponent<Rigidbody2D>().constraints = _constraints2D;
+                player.GetComponentInChildren<SpriteRenderer>().enabled = true;
+                player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
+                player.GetComponent<CapsuleCollider2D>().enabled = true;
                 player.GetComponent<PlayerScript>().enabled = true;
+                player.GetComponent<Transform>().position = GetComponent<Transform>().position;
             }
         }
     }
-    
+
     T CopyComponent<T>(T original, GameObject destination) where T : Component
     {
         System.Type type = original.GetType();
