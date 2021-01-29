@@ -9,8 +9,9 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] public float movementVelocity;
     [SerializeField] public float jumpVelocity;
 
+    public bool facingRight = true;
     GroundDetector groundDetector;
-    Rigidbody2D body;
+    Rigidbody2D body; 
     Vector2 direction;
     // Start is called before the first frame update
     void Start()
@@ -28,7 +29,6 @@ public class PlayerScript : MonoBehaviour
 
         if (direction.y > 0.0f && groundDetector.IsAtGround) {
             velocity.y = jumpVelocity;
-            
         }
 
         body.velocity = velocity;
@@ -37,5 +37,18 @@ public class PlayerScript : MonoBehaviour
     void OnMove(InputValue value)
     {
         direction = value.Get<Vector2>();
+        if (enabled)
+        {
+            if (direction.x > 0.0f)
+            {
+                facingRight = true;
+                GetComponentInChildren<SpriteRenderer>().flipX = false;
+            }
+            else if (direction.x < 0.0f)
+            {
+                facingRight = false;
+                GetComponentInChildren<SpriteRenderer>().flipX = true;
+            }
+        }
     }
 }

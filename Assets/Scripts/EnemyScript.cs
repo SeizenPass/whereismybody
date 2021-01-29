@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class EnemyScript : MonoBehaviour
 {
@@ -22,9 +24,12 @@ public class EnemyScript : MonoBehaviour
     }
 
     // Update is called once per frame
-    
-    
-    
+
+    private void OnEnable()
+    {
+        GetComponent<PlayerScript>().facingRight = player.GetComponent<PlayerScript>();
+    }
+
     private void OnPossess()
     {
         if (groundDetector.IsAtGround)
@@ -48,7 +53,16 @@ public class EnemyScript : MonoBehaviour
                 player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
                 player.GetComponent<CapsuleCollider2D>().enabled = true;
                 player.GetComponent<PlayerScript>().enabled = true;
-                player.GetComponent<Transform>().position = GetComponent<Transform>().position;
+                Vector3 pos = GetComponent<Transform>().position;
+                if (GetComponent<PlayerScript>().facingRight)
+                {
+                    pos.x += GetComponent<Transform>().lossyScale.x / 2;
+                }
+                else
+                {
+                    pos.x -= GetComponent<Transform>().lossyScale.x / 2;
+                }
+                player.GetComponent<Transform>().position = pos;
             }
         }
     }
