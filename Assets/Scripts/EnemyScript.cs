@@ -1,75 +1,65 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.PlayerLoop;
+using UnityEngine.UIElements;
 
 public class EnemyScript : MonoBehaviour
 {
+    [SerializeField] public float movementVelocity;
+    [SerializeField] public float jumpVelocity;
+    
     GroundDetector groundDetector;
-
+    private Animator _animator;
     private GameObject player;
-    private PossessScript ps;
-    private RigidbodyConstraints2D _constraints2D;
-
+    private Rigidbody2D body;
+    Vector2 direction;
     private bool isPossessed = false;
+    public bool facingRight = true;
+    
+    
+    private int _animatorSpeedName;
     // Start is called before the first frame update
     void Start()
     {
+        _animator = GetComponent<Animator>();
+        _animatorSpeedName = Animator.StringToHash("Speed");
+        body = GetComponent<Rigidbody2D>();
         player = GameObject.Find("Player");
         groundDetector = GetComponentInChildren<GroundDetector>();
-        ps = GetComponentInChildren<PossessScript>();
-        _constraints2D = GetComponent<Rigidbody2D>().constraints;
     }
 
     // Update is called once per frame
-    
-    
-    
-    private void OnPossess()
+    void Update()
     {
-        if (groundDetector.IsAtGround)
-        {
-            if (!isPossessed && ps.playerAround)
-            {
-                isPossessed = true;
-                GetComponent<PlayerScript>().enabled = true;
-                GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
-                player.GetComponentInChildren<SpriteRenderer>().enabled = false;
-                player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
-                player.GetComponent<CapsuleCollider2D>().enabled = false;
-                player.GetComponent<PlayerScript>().enabled = false;
-            }
-            else if (isPossessed)
-            {
-                isPossessed = false;
-                GetComponent<PlayerScript>().enabled = false;
-                GetComponent<Rigidbody2D>().constraints = _constraints2D;
-                player.GetComponentInChildren<SpriteRenderer>().enabled = true;
-                player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
-                player.GetComponent<CapsuleCollider2D>().enabled = true;
-                player.GetComponent<PlayerScript>().enabled = true;
-                player.GetComponent<Transform>().position = GetComponent<Transform>().position;
-            }
+        Vector2 velocity = body.velocity;
+        velocity.x = direction.x * movementVelocity;       
+        
+        if (direction.y > 0.0f && groundDetector.IsAtGround) {
+            velocity.y = jumpVelocity;
         }
+        
+        _animator.SetFloat(_animatorSpeedName, Mathf.Abs(velocity.x));
+        body.velocity = velocity;
     }
 
-    T CopyComponent<T>(T original, GameObject destination) where T : Component
+    void OnMove(InputValue value)
     {
-        System.Type type = original.GetType();
-        var dst = destination.GetComponent(type) as T;
-        if (!dst) dst = destination.AddComponent(type) as T;
-        var fields = type.GetFields();
-        foreach (var field in fields)
+        direction = value.Get<Vector2>();
+        if (enabled)
         {
-            if (field.IsStatic) continue;
-            field.SetValue(dst, field.GetValue(original));
+            if (direction.x > 0.0f)
+            {
+                facingRight = true;
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+            else if (direction.x < 0.0f)
+            {
+                facingRight = false;
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
         }
-        var props = type.GetProperties();
-        foreach (var prop in props)
-        {
-            if (!prop.CanWrite || !prop.CanWrite || prop.Name == "name") continue;
-            prop.SetValue(dst, prop.GetValue(original, null), null);
-        }
-        return dst as T;
     }
 }
